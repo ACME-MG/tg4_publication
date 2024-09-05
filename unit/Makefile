@@ -30,20 +30,20 @@ CHEMICAL_REACTIONS        := no
 CONTACT                   := no
 FLUID_PROPERTIES          := no
 FSI                       := no
-HEAT_TRANSFER             := no
+HEAT_TRANSFER             := yes
 MISC                      := no
 NAVIER_STOKES             := no
 PHASE_FIELD               := no
 RDG                       := no
 RICHARDS                  := no
 STOCHASTIC_TOOLS          := no
-TENSOR_MECHANICS          := no
+TENSOR_MECHANICS          := yes
 XFEM                      := no
 POROUS_FLOW               := no
 LEVEL_SET                 := no
 include           $(MOOSE_DIR)/modules/modules.mk
 ###############################################################################
-
+TG4_DIR      := $(CURDIR)/..
 # Extra stuff for GTEST
 ADDITIONAL_INCLUDES := -I$(FRAMEWORK_DIR)/contrib/gtest
 ADDITIONAL_LIBS     := $(FRAMEWORK_DIR)/contrib/gtest/libgtest.la

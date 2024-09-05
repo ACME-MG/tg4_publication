@@ -1,0 +1,37 @@
+NEML_DIR            ?= $(TG4_DIR)/neml
+
+ifneq ($(wildcard $(NEML_DIR)/CMakeLists.txt),)
+
+#Exclude all the files with _wrap in the name because they are drivers for testing
+#that are not needed and have additional dependencies.
+neml_srcfiles       := $(shell find $(NEML_DIR)/src -name "*.cxx" | grep -v _wrap)
+neml_objects        += $(patsubst %.cxx,%.$(obj-suffix),$(neml_srcfiles))
+neml_LIB            := $(NEML_DIR)/libneml-$(METHOD).la
+neml_includes       := $(NEML_DIR)/include
+neml_dep_includes   := -iquote$(NEML_DIR)/rapidxml -iquote$(TG4_DIR)/neml_extra_include
+
+$(neml_LIB): $(neml_objects)
+	@echo "Linking Library "$@"..."
+	@$(libmesh_LIBTOOL) --tag=CC $(LIBTOOLFLAGS) --mode=link --quiet \
+	  $(libmesh_CC) $(libmesh_CFLAGS) -o $@ $(neml_objects) $(libmesh_LDFLAGS) $(EXTERNAL_FLAGS) -rpath $(NEML_DIR)
+	@$(libmesh_LIBTOOL) --mode=install --quiet install -c $(neml_LIB) $(NEML_DIR)
+
+$(NEML_DIR)/src/%.$(obj-suffix) : $(NEML_DIR)/src/%.cxx
+	@echo "Compiling C++ (in "$(METHOD)" mode) "$<"..."
+	@$(libmesh_LIBTOOL) --tag=CXX $(LIBTOOLFLAGS) --mode=compile --quiet \
+	  $(libmesh_CXX) $(libmesh_CPPFLAGS) $(ADDITIONAL_CPPFLAGS) $(libmesh_CXXFLAGS) $(neml_dep_includes) $(app_INCLUDES) $(libmesh_INCLUDE) -w -DHAVE_CONFIG_H -MMD -MP -MF $@.d -MT $@ -c $< -o $@
+
+ADDITIONAL_INCLUDES  += -iquote$(neml_includes) $(neml_dep_includes)
+ADDITIONAL_LIBS      += -L$(NEML_DIR) -lneml-$(METHOD)
+ADDITIONAL_CPPFLAGS  += -DNEML_ENABLED -DNEML_STRAIN_RATE_LIMIT=1e10
+ADDITIONAL_DEPEND_LIBS += $(neml_LIB)
+
+else
+$(info WARNING: Not building with NEML because neml submodule is not present and NEML_DIR was not set to a valid NEML checkout)
+$(info See https://github.com/Argonne-National-Laboratory/neml/blob/dev/INSTALL.md)
+endif
+
+# This executes a script that populates the regression tests that run the same models as the NEML
+# regression tests, but from BlackBear
+# all:
+# 	cd $(TG4_DIR)/test/tests/neml_regression && NEML_DIR=$(NEML_DIR) ./populate_tests.py && cd $(TG4_DIR)/test/tests/neml_regression_lagrangian && NEML_DIR=$(NEML_DIR) ./populate_tests.py
