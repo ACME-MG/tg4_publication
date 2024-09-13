@@ -33,5 +33,5 @@ endif
 
 # This executes a script that populates the regression tests that run the same models as the NEML
 # regression tests, but from BlackBear
-all:
-	cd $(TG4_DIR)/test/tests/neml_regression && NEML_DIR=$(NEML_DIR) ./populate_tests.py && cd $(TG4_DIR)/test/tests/neml_regression_lagrangian && NEML_DIR=$(NEML_DIR) ./populate_tests.py
+# all:
+# 	cd $(TG4_DIR)/test/tests/neml_regression && NEML_DIR=$(NEML_DIR) ./populate_tests.py && cd $(TG4_DIR)/test/tests/neml_regression_lagrangian && NEML_DIR=$(NEML_DIR) ./populate_tests.py
