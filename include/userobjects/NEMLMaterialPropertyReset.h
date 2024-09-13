@@ -13,12 +13,12 @@
 #include "CauchyStressFromNEML.h"
 
 /// Reset a NEML state variable when a coupled variable hits a critical value
-class NEMLMaterialPropertyResetTest : public ElementUserObject
+class NEMLMaterialPropertyReset : public ElementUserObject
 {
 public:
   static InputParameters validParams();
 
-  NEMLMaterialPropertyResetTest(const InputParameters & parameters);
+  NEMLMaterialPropertyReset(const InputParameters & parameters);
 
   virtual void initialize() override;
   virtual void initialSetup() override;
@@ -33,8 +33,12 @@ protected:
 protected:
   /// Coupled variable
   const VariableValue & _variable;
-  /// Critical value at which to reset
-  Real _critical_value;
+  /// Single-stage or two-stage reset
+  const bool _two_stage;
+  /// Values to trigger resets at
+  const Real _critical_value;
+  const Real _lower_value;
+  const Real _upper_value;
   /// List of NEML model properties to reset
   std::vector<std::string> _props;
   /// NEML material model class to link to

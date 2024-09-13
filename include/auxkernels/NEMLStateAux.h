@@ -19,12 +19,12 @@
 #include "neml_interface.h"
 
 /// Pull a NEML internal state variable into an AuxVariable
-class NEMLStateAuxTest : public AuxKernel
+class NEMLStateAux : public AuxKernel
 {
 public:
   static InputParameters validParams();
 
-  NEMLStateAuxTest(const InputParameters & parameters);
+  NEMLStateAux(const InputParameters & parameters);
 
 protected:
   virtual Real computeValue() override;

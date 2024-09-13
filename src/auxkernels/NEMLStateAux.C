@@ -14,12 +14,12 @@
 
 #ifdef NEML_ENABLED
 
-#include "NEMLStateAuxTest.h"
+#include "NEMLStateAux.h"
 
-registerMooseObject("tg4App", NEMLStateAuxTest);
+registerMooseObject("tg4App", NEMLStateAux);
 
 InputParameters
-NEMLStateAuxTest::validParams()
+NEMLStateAux::validParams()
 {
   InputParameters params = AuxKernel::validParams();
 
@@ -32,7 +32,7 @@ NEMLStateAuxTest::validParams()
   return params;
 }
 
-NEMLStateAuxTest::NEMLStateAuxTest(const InputParameters & parameters)
+NEMLStateAux::NEMLStateAux(const InputParameters & parameters)
   : AuxKernel(parameters),
     _fname(getParam<FileName>("database")),
     _mname(getParam<std::string>("model")),
@@ -68,11 +68,11 @@ NEMLStateAuxTest::NEMLStateAuxTest(const InputParameters & parameters)
 }
 
 Real
-NEMLStateAuxTest::computeValue()
+NEMLStateAux::computeValue()
 {
   // Check that the vector we got has the right size for the model
   if (_model->nstore() != _neml_history[_qp].size())
-    paramError("The size of the state_name vector provided to NEMLStateAuxTest "
+    paramError("The size of the state_name vector provided to NEMLStateAux "
                "does not match the number of history variables requested "
                "by the NEML model itself.");
 

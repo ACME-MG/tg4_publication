@@ -25,6 +25,7 @@ public:
   CauchyStressFromNEML(const InputParameters & parameters);
   /// Reset some subset of the internal state
   virtual void reset_state(const std::vector<unsigned int> & indices, unsigned int qp);
+  virtual void const_state(const std::vector<unsigned int> & indices, unsigned int qp);
   /**
    * Get the offsets into the NEML state either by finding them
    * in the state vector reported by NEML (by stupid linear search).

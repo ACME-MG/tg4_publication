@@ -83,6 +83,20 @@ CauchyStressFromNEML::reset_state(const std::vector<unsigned int> & indices, uns
     _history[qp][i] = init[i];
 }
 
+void
+CauchyStressFromNEML::const_state(const std::vector<unsigned int> & indices, unsigned int qp)
+{
+  // Guard from zero, just for MOOSE...
+  if (_model->nstore() == 0)
+    return;
+
+  // Constant values
+  for (auto i : indices)
+  {
+    _history[qp][i] = _history_old[qp][i];
+  }
+}
+
 std::vector<unsigned int>
 CauchyStressFromNEML::provide_indices(const std::vector<std::string> & to_reset)
 {
