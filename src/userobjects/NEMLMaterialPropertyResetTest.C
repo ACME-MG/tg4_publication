@@ -9,12 +9,12 @@
 
 #ifdef NEML_ENABLED
 
-#include "NEMLMaterialPropertyReset.h"
+#include "NEMLMaterialPropertyResetTest.h"
 
-registerMooseObject("tg4App", NEMLMaterialPropertyReset);
+registerMooseObject("tg4App", NEMLMaterialPropertyResetTest);
 
 InputParameters
-NEMLMaterialPropertyReset::validParams()
+NEMLMaterialPropertyResetTest::validParams()
 {
   InputParameters params = ElementUserObject::validParams();
 
@@ -27,7 +27,7 @@ NEMLMaterialPropertyReset::validParams()
   return params;
 }
 
-NEMLMaterialPropertyReset::NEMLMaterialPropertyReset(const InputParameters & parameters)
+NEMLMaterialPropertyResetTest::NEMLMaterialPropertyResetTest(const InputParameters & parameters)
   : ElementUserObject(parameters),
     _variable(coupledValue("variable")),
     _critical_value(getParam<Real>("critical_value")),
@@ -36,42 +36,42 @@ NEMLMaterialPropertyReset::NEMLMaterialPropertyReset(const InputParameters & par
 }
 
 void
-NEMLMaterialPropertyReset::initialSetup()
+NEMLMaterialPropertyResetTest::initialSetup()
 {
   _neml_material = dynamic_cast<CauchyStressFromNEML *>(&getMaterial("material"));
   if (_neml_material == nullptr)
-    mooseError("Unable to link NEMLMaterialPropertyReset object to the "
+    mooseError("Unable to link NEMLMaterialPropertyResetTest object to the "
                "stress calculator");
 
   _indices = _neml_material->provide_indices(_props);
 }
 
 void
-NEMLMaterialPropertyReset::initialize()
+NEMLMaterialPropertyResetTest::initialize()
 {
 }
 
 void
-NEMLMaterialPropertyReset::execute()
+NEMLMaterialPropertyResetTest::execute()
 {
   for (_qp = 0; _qp < _qrule->n_points(); _qp++)
     resetQp();
 }
 
 void
-NEMLMaterialPropertyReset::resetQp()
+NEMLMaterialPropertyResetTest::resetQp()
 {
   if (_variable[_qp] >= _critical_value)
     _neml_material->reset_state(_indices, _qp);
 }
 
 void
-NEMLMaterialPropertyReset::finalize()
+NEMLMaterialPropertyResetTest::finalize()
 {
 }
 
 void
-NEMLMaterialPropertyReset::threadJoin(const UserObject & /*y*/)
+NEMLMaterialPropertyResetTest::threadJoin(const UserObject & /*y*/)
 {
 }
 

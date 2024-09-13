@@ -53,6 +53,7 @@ XFEM                        := no
 
 include $(MOOSE_DIR)/modules/modules.mk
 ###############################################################################
+TG4_DIR      := $(CURDIR)
 
 # dep apps
 APPLICATION_DIR    := $(CURDIR)
