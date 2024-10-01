@@ -14,14 +14,14 @@
 class Function;
 
 /**
- * Goldak ellipsoid heat source distribution.
+ * Diffused Goldak ellipsoid heat source distribution.
  */
-class FunctionPathEllipsoidHeatSourceRamp : public Material
+class FunctionPathDiffusedEllipsoidHeatSource : public Material
 {
 public:
   static InputParameters validParams();
 
-  FunctionPathEllipsoidHeatSourceRamp(const InputParameters & parameters);
+  FunctionPathDiffusedEllipsoidHeatSource(const InputParameters & parameters);
 
 protected:
   virtual void computeQpProperties() override;

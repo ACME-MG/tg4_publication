@@ -7,14 +7,14 @@
 //* Licensed under LGPL 2.1, please see LICENSE for details
 //* https://www.gnu.org/licenses/lgpl-2.1.html
 
-#include "FunctionPathEllipsoidHeatSourceRamp.h"
+#include "FunctionPathDiffusedEllipsoidHeatSource.h"
 
 #include "Function.h"
 
-registerMooseObject("tg4App", FunctionPathEllipsoidHeatSourceRamp);
+registerMooseObject("tg4App", FunctionPathDiffusedEllipsoidHeatSource);
 
 InputParameters
-FunctionPathEllipsoidHeatSourceRamp::validParams()
+FunctionPathDiffusedEllipsoidHeatSource::validParams()
 {
   InputParameters params = Material::validParams();
 
@@ -81,11 +81,11 @@ FunctionPathEllipsoidHeatSourceRamp::validParams()
   params.addParam<PostprocessorName>(
       "pp_va", "1", "Postprocessor with va value to determine volumetric heat.");
 
-  params.addClassDescription("Goldak ellipsoid volumetric source heat with function path.");
+  params.addClassDescription("Diffused oldak ellipsoid volumetric heat source with varying parameters and function path.");
   return params;
 }
 
-FunctionPathEllipsoidHeatSourceRamp::FunctionPathEllipsoidHeatSourceRamp(
+FunctionPathDiffusedEllipsoidHeatSource::FunctionPathDiffusedEllipsoidHeatSource(
     const InputParameters & parameters)
   : Material(parameters),
 
@@ -238,7 +238,7 @@ FunctionPathEllipsoidHeatSourceRamp::FunctionPathEllipsoidHeatSourceRamp(
 }
 
 void
-FunctionPathEllipsoidHeatSourceRamp::computeQpProperties()
+FunctionPathDiffusedEllipsoidHeatSource::computeQpProperties()
 {
   // Set variables for parameter values
   Real path_x_t;
@@ -432,9 +432,6 @@ FunctionPathEllipsoidHeatSourceRamp::computeQpProperties()
     calc_va_temp += std::exp(-(std::pow(x_rot, 2.0) / std::pow(rx_t, 2.0) +
                                std::pow(y_rot, 2.0) / std::pow(ry_t, 2.0) +
                                std::pow(z - path_z_t, 2.0) / std::pow(rz_t, 2.0)));
-    // calc_va_temp += std::exp(-(std::pow(x_rot, 2.0) / std::pow(rx_t, 2.0) + std::pow(y_rot, 2.0)
-    // / std::pow(ry_t, 2.0) + std::pow(z - path_z_t + weave_z_t * std::sin(libMesh::pi * i /
-    // 6), 2.0) / std::pow(rz_t, 2.0)));
   }
 
   _calc_va[_qp] = calc_va_temp;
@@ -449,7 +446,6 @@ FunctionPathEllipsoidHeatSourceRamp::computeQpProperties()
     {
       _volumetric_heat[_qp] = p_t * eta_t * _calc_va[_qp] / _va;
     }
-    // _volumetric_heat[_qp] = p_t * eta_t * _calc_va[_qp]/_va;
   }
   else if (isParamSetByUser("function_va"))
   {
@@ -461,7 +457,6 @@ FunctionPathEllipsoidHeatSourceRamp::computeQpProperties()
     {
       _volumetric_heat[_qp] = p_t * eta_t * _calc_va[_qp] / _function_va.value(_t);
     }
-    // _volumetric_heat[_qp] = p_t * eta_t * _calc_va[_qp]/_function_va.value(_t);
   }
   else
   {
@@ -473,6 +468,5 @@ FunctionPathEllipsoidHeatSourceRamp::computeQpProperties()
     {
       _volumetric_heat[_qp] = p_t * eta_t * _calc_va[_qp] / _pp_va;
     }
-    // _volumetric_heat[_qp] = p_t * eta_t * _calc_va[_qp]/_pp_va;
   }
 }
